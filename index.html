@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Estratégica de Empreendimentos - Silvanio Gois</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: rgb(39, 98, 141);
+            --secondary-bg: #f8fafc;
+            --gateway-color: #f39c12;
+            --kpi-color: #27ae60;
+            --risk-color: #e74c3c;
+            --env-color: #2ecc71;
+            --compliance-color: #3498db;
+            --norm-color: #8e44ad;
+            --stakeholder-color: #e67e22;
+            --trabalhista-color: #c0392b;
+            --tributario-color: #16a085;
+            --social-color: #d35400;
+            --text-main: #2c3e50;
+            --light-gray: #ecf0f1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body { background-color: var(--secondary-bg); color: var(--text-main); }
+
+        /* CABEÇALHO EXECUTIVO */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .user-profile { display: flex; align-items: center; gap: 20px; }
+
+        .user-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+            object-fit: cover;
+        }
+
+        .user-info h2 { font-size: 1.1rem; margin-bottom: 2px; }
+
+        .whatsapp-btn {
+            color: #fff;
+            background: #25d366;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* CONTAINER BPMN */
+        .process-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .process-step {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-left: 10px solid var(--primary-color);
+        }
+
+        /* CONECTOR E GATEWAY */
+        .process-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 30px;
+            bottom: -65px;
+            width: 4px;
+            height: 70px;
+            background: repeating-linear-gradient(to bottom, var(--primary-color), var(--primary-color) 10px, transparent 10px, transparent 20px);
+        }
+
+        .gateway {
+            position: absolute;
+            bottom: -75px;
+            left: 15px;
+            background: var(--gateway-color);
+            width: 38px;
+            height: 38px;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: default;
+        }
+
+        .gateway i { transform: rotate(-45deg); font-size: 16px; }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kpi-badge {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--kpi-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--kpi-color);
+        }
+
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 10px 0;
+        }
+        .norm-badge, .nr-badge, .nbr-badge, .stakeholder-badge, .trabalhista-badge, .tributario-badge, .social-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
+            margin: 2px 4px 2px 0;
+            white-space: nowrap;
+        }
+        .norm-badge { background: rgba(142, 68, 173, 0.1); color: var(--norm-color); border: 1px solid var(--norm-color); }
+        .nr-badge { background: rgba(192, 57, 43, 0.1); color: #c0392b; border: 1px solid #c0392b; }
+        .nbr-badge { background: rgba(41, 128, 185, 0.1); color: #2980b9; border: 1px solid #2980b9; }
+        .stakeholder-badge { background: rgba(230, 126, 34, 0.1); color: var(--stakeholder-color); border: 1px solid var(--stakeholder-color); }
+        .trabalhista-badge { background: rgba(192, 57, 43, 0.1); color: var(--trabalhista-color); border: 1px solid var(--trabalhista-color); }
+        .tributario-badge { background: rgba(22, 160, 133, 0.1); color: var(--tributario-color); border: 1px solid var(--tributario-color); }
+        .social-badge { background: rgba(211, 84, 0, 0.1); color: var(--social-color); border: 1px solid var(--social-color); }
+
+        .subphase {
+            margin: 20px 0 10px 0;
+            padding-left: 15px;
+            border-left: 3px solid var(--light-gray);
+        }
+        .subphase h4 {
+            color: var(--text-main);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .subphase h4 i { color: var(--primary-color); }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+        }
+
+        .checklist {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+        .checklist h5 {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        .checklist ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 5px 10px;
+        }
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .checklist li i {
+            color: var(--kpi-color);
+            font-size: 0.7rem;
+        }
+
+        .stakeholders-box {
+            background: rgba(230, 126, 34, 0.05);
+            border-left: 3px solid var(--stakeholder-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+        .stakeholders-box strong { color: var(--stakeholder-color); }
+        .stakeholder-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        .stakeholder-item {
+            flex: 1 1 200px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .stakeholder-item i { margin-right: 5px; color: var(--stakeholder-color); }
+
+        .responsavel {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .responsavel i { color: var(--primary-color); }
+
+        .sustentabilidade-box, .compliance-box, .trabalhista-box, .tributario-box, .social-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .sustentabilidade-box {
+            background: rgba(46, 204, 113, 0.05);
+            border-left: 3px solid var(--env-color);
+        }
+        .compliance-box {
+            background: rgba(52, 152, 219, 0.05);
+            border-left: 3px solid var(--compliance-color);
+        }
+        .trabalhista-box {
+            background: rgba(192, 57, 43, 0.05);
+            border-left: 3px solid var(--trabalhista-color);
+        }
+        .tributario-box {
+            background: rgba(22, 160, 133, 0.05);
+            border-left: 3px solid var(--tributario-color);
+        }
+        .social-box {
+            background: rgba(211, 84, 0, 0.05);
+            border-left: 3px solid var(--social-color);
+        }
+
+        .risk-alert {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(231, 76, 60, 0.05);
+            border-left: 3px solid var(--risk-color);
+            font-size: 0.85rem;
+            color: #a93226;
+        }
+
+        .detail-list {
+            margin-top: 15px;
+            list-style: none;
+        }
+        .detail-list li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detail-list i {
+            color: var(--primary-color);
+            width: 18px;
+        }
+
+        /* GRID FINAL */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .card-info {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 4px solid var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .lessons-learned {
+            background: #fff7e6;
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 40px 0 20px;
+        }
+
+        footer {
+            background: #1a252f;
+            color: #ecf0f1;
+            padding: 40px 5%;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        footer a { color: var(--primary-color); text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; text-align: center; gap: 15px; }
+            .process-step { padding: 20px; }
+            .checklist ul { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="user-profile">
+        <img src="Executivo_Silvanio_Gestor.PNG" alt="Silvanio Gois" class="user-photo" onerror="this.src='https://via.placeholder.com/70?text=SG'">
+        <div class="user-info">
+            <h2>Silvanio Gois</h2>
+            <a href="https://wa.me/5513988301094" target="_blank" class="whatsapp-btn">
+                <i class="fab fa-whatsapp"></i> Contato
+            </a>
+        </div>
+    </div>
+    <h1>Pipeline de Gestão de Empreendimentos (Integral)</h1>
+</header>
+
+<main class="process-wrapper">
+
+    <!-- ========== FASE 01: CONCEPÇÃO ========== -->
+    <div class="process-step">
+        <div class="step-header">
+            <span class="step-tag">Fase 01: Concepção</span>
+            <span class="kpi-badge">KPI: TIR > 15% | VPL positivo</span>
+        </div>
+        <h3>Estudos de Viabilidade e Incorporação</h3>
+        <p>Análise de mercado, viabilidade técnica, ambiental, social e jurídica. Aplicável a edificações, infraestrutura (rodovias, barragens, saneamento) e outros.</p>
+        
+        <div class="badge-group">
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-18</span>
+            <span class="nbr-badge"><i class="fas fa-file-alt"></i> NBR 12721</span>
+            <span class="trabalhista-badge"><i class="fas fa-users"></i> CLT</span>
+            <span class="tributario-badge"><i class="fas fa-calculator"></i> RET / SPE</span>
+            <span class="social-badge"><i class="fas fa-hand-holding-heart"></i> ODS</span>
+        </div>
+
+        <div class="subphase">
+            <h4><i class="fas fa-search"></i> 1.1 Estudos preliminares</h4>
+            <p>Pesquisa de demanda, análise de traçado, estudos hidrológicos, caracterização do solo, etc.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-calculator"></i> 1.2 Viabilidade econômico-financeira</h4>
+            <p>Fluxo de caixa projetado, análise de sensibilidade, fontes de recursos (público/privado).</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-leaf"></i> 1.3 Licenciamento ambiental prévio</h4>
+            <p>Estudo de impacto ambiental (EIA/RIMA), consulta a órgãos ambientais, definição de condicionantes.</p>
+        </div>
+
+        <!-- Tributário / Estrutura Societária -->
+        <div class="tributario-box">
+            <strong><i class="fas fa-calculator" style="color:var(--tributario-color);"></i> Planejamento Tributário e Estrutura Societária:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Avaliação do melhor regime: Simples Nacional, Lucro Presumido ou Lucro Real</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Análise de viabilidade de SPE (Sociedade de Propósito Específico) para isolamento de riscos</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Verificação de enquadramento no RET (Regime Especial de Tributação) – alíquota única de 4%</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Simulação de carga tributária para decisão de investimento</li>
+            </ul>
+        </div>
+
+        <!-- Impacto Social -->
+        <div class="social-box">
+            <strong><i class="fas fa-hand-holding-heart" style="color:var(--social-color);"></i> Avaliação de Impacto Social:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Diagnóstico socioeconômico da região (emprego, renda, infraestrutura)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Identificação de comunidades impactadas e planejamento de diálogo</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Alinhamento com os Objetivos de Desenvolvimento Sustentável (ODS) da ONU</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Definição de metas de contratação local e programas de qualificação</li>
+            </ul>
+        </div>
+
+        <!-- Stakeholders -->
+        <div class="stakeholders-box">
+            <strong><i class="fas fa-users" style="color:var(--stakeholder-color);"></i> Principais stakeholders:</strong>
+            <div class="stakeholder-list">
+                <div class="stakeholder-item"><i class="fas fa-building"></i> Investidores</div>
+                <div class="stakeholder-item"><i class="fas fa-university"></i> Órgãos ambientais</div>
+                <div class="stakeholder-item"><i class="fas fa-users"></i> Comunidade local</div>
+                <div class="stakeholder-item"><i class="fas fa-briefcase"></i> Sindicatos patronais</div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h5><i class="fas fa-clipboard-check"></i> Checklist de aprovação</h5>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Estudo de viabilidade aprovado</li>
+                <li><i class="fas fa-check-circle"></i> Licença prévia (LP) ou equivalente</li>
+                <li><i class="fas fa-check-circle"></i> Definição do regime tributário e estrutura societária</li>
+                <li><i class="fas fa-check-circle"></i> Diagnóstico de impacto social inicial</li>
+                <li><i class="fas fa-check-circle"></i> Matriz de riscos inclui aspectos socioambientais e trabalhistas</li>
+            </ul>
+        </div>
+
+        <div class="responsavel">
+            <i class="fas fa-user-tie"></i> <strong>Gatekeeper:</strong> Diretor de Novos Negócios / Comitê de Investimento
+        </div>
+
+        <div class="risk-alert"><strong>Risco crítico:</strong> Escolha tributária inadequada, oposição comunitária, passivos trabalhistas futuros não identificados.</div>
+        <div class="gateway" title="Aprovação do Comitê de Investimento">
+            <i class="fas fa-lock"></i>
+        </div>
+    </div>
+
+    <!-- ========== FASE 02: ENGENHARIA ========== -->
+    <div class="process-step">
+        <div class="step-header">
+            <span class="step-tag">Fase 02: Engenharia</span>
+            <span class="kpi-badge">KPI: Desvio orçamentário ≤ 3%</span>
+        </div>
+        <h3>Projeto Executivo e Planejamento</h3>
+        <p>Detalhamento técnico, compatibilização, planejamento e especificações.</p>
+        
+        <div class="badge-group">
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-18</span>
+            <span class="nr-badge"><i class="fas fa-bolt"></i> NR-10</span>
+            <span class="nbr-badge"><i class="fas fa-drafting-compass"></i> NBR 6118</span>
+            <span class="nbr-badge"><i class="fas fa-drafting-compass"></i> NBR 9050</span>
+            <span class="social-badge"><i class="fas fa-universal-access"></i> Acessibilidade</span>
+        </div>
+
+        <div class="subphase">
+            <h4><i class="fas fa-drafting-compass"></i> 2.1 Projetos básico e executivo</h4>
+            <p>Topografia, geotecnia, estruturas, instalações, drenagem, etc.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-cubes"></i> 2.2 Compatibilização e BIM (4D/5D)</h4>
+            <p>Detecção de interferências, modelagem integrada.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-recycle"></i> 2.3 Plano de gestão de resíduos e materiais</h4>
+            <p>Definição de áreas de bota-fora, usinas de reciclagem, aproveitamento de solo.</p>
+        </div>
+
+        <!-- Impacto social no projeto -->
+        <div class="social-box">
+            <strong><i class="fas fa-hand-holding-heart" style="color:var(--social-color);"></i> Incorporação de aspectos sociais no projeto:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Acessibilidade universal (NBR 9050, Estatuto da Pessoa com Deficiência)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Desenho de espaços que promovam convivência comunitária</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Previsão de equipamentos sociais (se aplicável: creches, postos de saúde)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Consulta a grupos vulneráveis para validação de soluções</li>
+            </ul>
+        </div>
+
+        <!-- Stakeholders -->
+        <div class="stakeholders-box">
+            <strong><i class="fas fa-users" style="color:var(--stakeholder-color);"></i> Stakeholders:</strong>
+            <div class="stakeholder-list">
+                <div class="stakeholder-item"><i class="fas fa-drafting-compass"></i> Projetistas</div>
+                <div class="stakeholder-item"><i class="fas fa-hard-hat"></i> Construtora</div>
+                <div class="stakeholder-item"><i class="fas fa-city"></i> Prefeitura (aprovação)</div>
+                <div class="stakeholder-item"><i class="fas fa-users"></i> Conselhos de arquitetura/engenharia</div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h5><i class="fas fa-clipboard-check"></i> Pré-requisitos para liberação de verba</h5>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Projetos executivos aprovados</li>
+                <li><i class="fas fa-check-circle"></i> Licença de instalação (LI) emitida</li>
+                <li><i class="fas fa-check-circle"></i> Orçamento analítico com BDI</li>
+                <li><i class="fas fa-check-circle"></i> Plano de gestão de resíduos validado</li>
+                <li><i class="fas fa-check-circle"></i> Projeto atende a requisitos de acessibilidade</li>
+            </ul>
+        </div>
+
+        <div class="responsavel">
+            <i class="fas fa-user-tie"></i> <strong>Gatekeeper:</strong> Gerente de Engenharia / Diretor Técnico
+        </div>
+
+        <div class="risk-alert"><strong>Risco:</strong> Projetos desatualizados, não conformidade com normas, exclusão social no design.</div>
+        <div class="gateway" title="Liberação de Verba">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+    </div>
+
+    <!-- ========== FASE 03: PRODUÇÃO ========== -->
+    <div class="process-step">
+        <div class="step-header">
+            <span class="step-tag">Fase 03: Produção</span>
+            <span class="kpi-badge">KPI: IDC ≥ 0,95 | IDP ≥ 0,90 | Taxa de reciclagem ≥ 20% | Zero acidente</span>
+        </div>
+        <h3>Execução, Suprimentos e Gestão de Pessoas</h3>
+        <p>Mobilização, logística, execução das frentes de serviço, controle de qualidade, segurança e gestão de mão de obra.</p>
+        
+        <div class="badge-group">
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-18</span>
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-35</span>
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-6</span>
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-12</span>
+            <span class="nr-badge"><i class="fas fa-hard-hat"></i> NR-33</span>
+            <span class="trabalhista-badge"><i class="fas fa-users"></i> CLT</span>
+            <span class="social-badge"><i class="fas fa-hand-holding-heart"></i> Inclusão</span>
+        </div>
+
+        <div class="subphase">
+            <h4><i class="fas fa-tools"></i> 3.1 Mobilização e infraestrutura de apoio</h4>
+            <p>Canteiros, alojamentos, centrais de concreto/asfalto, britagem. Conforme NR-18.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-truck"></i> 3.2 Suprimentos e logística</h4>
+            <p>Compra de materiais, gestão de estoques, rastreabilidade de origem (madeira, minério).</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-hard-hat"></i> 3.3 Execução das frentes de serviço</h4>
+            <p>Terraplenagem, pavimentação, concretagem, montagens, etc.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-trash-alt"></i> 3.4 Gestão de resíduos e reciclagem</h4>
+            <p>Triagem, reutilização de solo, britagem de RCD, destinação de resíduos perigosos.</p>
+        </div>
+
+        <!-- Leis Trabalhistas e Gestão de Pessoas -->
+        <div class="trabalhista-box">
+            <strong><i class="fas fa-users" style="color:var(--trabalhista-color);"></i> Gestão Trabalhista e Previdenciária:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Registro em carteira (CLT) de todos os empregados, inclusive terceiros</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Controle de jornada (ponto eletrônico) e pagamento de horas extras (mínimo 50%)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Adicionais de periculosidade (30%) e insalubridade (10% a 40%) quando devido</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Cumprimento das NRs: EPI (NR-6), treinamentos (NR-35, NR-33), CIPA (NR-5), PCMAT (NR-18)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Recolhimentos de FGTS, INSS e encargos sociais em dia</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Gestão de afastamentos, acidentes de trabalho (CAT) e programas de saúde ocupacional (PCMSO, PPRA)</li>
+            </ul>
+        </div>
+
+        <!-- Impacto Social na fase de produção -->
+        <div class="social-box">
+            <strong><i class="fas fa-hand-holding-heart" style="color:var(--social-color);"></i> Ações de impacto social positivo:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Contratação prioritária de mão de obra local</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Programas de qualificação profissional e alfabetização</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Inclusão de minorias (aprendizes, pessoas com deficiência - Lei de Cotas)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Diálogo permanente com a comunidade vizinha (gestão de ruído, poeira, tráfego)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Programas de voluntariado empresarial com os trabalhadores</li>
+            </ul>
+        </div>
+
+        <!-- Stakeholders -->
+        <div class="stakeholders-box">
+            <strong><i class="fas fa-users" style="color:var(--stakeholder-color);"></i> Stakeholders:</strong>
+            <div class="stakeholder-list">
+                <div class="stakeholder-item"><i class="fas fa-users"></i> Trabalhadores e sindicatos</div>
+                <div class="stakeholder-item"><i class="fas fa-truck"></i> Fornecedores</div>
+                <div class="stakeholder-item"><i class="fas fa-tree"></i> Vizinhança</div>
+                <div class="stakeholder-item"><i class="fas fa-eye"></i> Fiscalização do trabalho (MTE)</div>
+                <div class="stakeholder-item"><i class="fas fa-briefcase"></i> Ministério Público do Trabalho</div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h5><i class="fas fa-clipboard-check"></i> Checklist de liberação de frentes</h5>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Licença de operação (LO) ou autorização</li>
+                <li><i class="fas fa-check-circle"></i> Materiais com origem comprovada</li>
+                <li><i class="fas fa-check-circle"></i> Equipes treinadas em segurança e meio ambiente</li>
+                <li><i class="fas fa-check-circle"></i> Funcionários registrados e com exames admissionais</li>
+                <li><i class="fas fa-check-circle"></i> Canteiro adequado às NRs (alojamento, refeitório, etc.)</li>
+            </ul>
+        </div>
+
+        <div class="responsavel">
+            <i class="fas fa-user-tie"></i> <strong>Gatekeeper:</strong> Engenheiro Residente / RH / Gestor de SMS
+        </div>
+
+        <div class="risk-alert"><strong>Risco:</strong> Acidentes de trabalho, passivos trabalhistas, multas do MTE, conflitos com comunidade.</div>
+        <div class="gateway" title="Controle de Qualidade e Segurança">
+            <i class="fas fa-check-double"></i>
+        </div>
+    </div>
+
+    <!-- ========== FASE 04: CONTROLADORIA ========== -->
+    <div class="process-step">
+        <div class="step-header">
+            <span class="step-tag">Fase 04: Controladoria</span>
+            <span class="kpi-badge">KPI: Fluxo de caixa aderente | Desvio físico ≤ 5% | Encargos em dia</span>
+        </div>
+        <h3>Monitoramento Físico-Financeiro, Trabalhista e Tributário</h3>
+        <p>Auditoria de medições, análise de desvios, conformidade trabalhista e tributária.</p>
+        
+        <div class="badge-group">
+            <span class="trabalhista-badge"><i class="fas fa-file-invoice"></i> GFIP / FGTS</span>
+            <span class="tributario-badge"><i class="fas fa-calculator"></i> DCTF / EFD</span>
+            <span class="norm-badge"><i class="fas fa-certificate"></i> ISO 9001</span>
+        </div>
+
+        <div class="subphase">
+            <h4><i class="fas fa-chart-line"></i> 4.1 Medições e faturamento</h4>
+            <p>Validação de boletins, medição de serviços executados, emissão de faturas.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-chart-pie"></i> 4.2 Análise de desempenho (EVM) e curva S</h4>
+            <p>Cálculo de IDC, IDP, previsão de término.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-file-alt"></i> 4.3 Relatórios de sustentabilidade, compliance e social</h4>
+            <p>Indicadores de reciclagem, consumo de recursos, não conformidades, balanço social.</p>
+        </div>
+
+        <!-- Controle trabalhista e tributário -->
+        <div class="trabalhista-box">
+            <strong><i class="fas fa-users" style="color:var(--trabalhista-color);"></i> Acompanhamento Trabalhista e Previdenciário:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Conferência mensal da folha de pagamento e encargos</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Verificação de depósitos de FGTS e recolhimentos ao INSS</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Controle de férias, rescisões e verbas rescisórias</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Auditoria de cumprimento de cotas (aprendizes, PCD)</li>
+            </ul>
+        </div>
+
+        <div class="tributario-box">
+            <strong><i class="fas fa-calculator" style="color:var(--tributario-color);"></i> Gestão Tributária e Obrigações Acessórias:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Apuração mensal de tributos conforme regime escolhido (Simples, Lucro Presumido, Real ou RET)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Entrega de obrigações: DCTF, EFD-Reinf, GFIP, etc.</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Controle de notas fiscais de subcontratadas (retenções)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Planejamento tributário para redução de custos (ex.: RET x Lucro Presumido)</li>
+            </ul>
+        </div>
+
+        <!-- Stakeholders -->
+        <div class="stakeholders-box">
+            <strong><i class="fas fa-users" style="color:var(--stakeholder-color);"></i> Stakeholders:</strong>
+            <div class="stakeholder-list">
+                <div class="stakeholder-item"><i class="fas fa-chart-pie"></i> Investidores</div>
+                <div class="stakeholder-item"><i class="fas fa-bank"></i> Financiadores</div>
+                <div class="stakeholder-item"><i class="fas fa-balance-scale"></i> Auditores</div>
+                <div class="stakeholder-item"><i class="fas fa-file-invoice"></i> Receita Federal</div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h5><i class="fas fa-clipboard-check"></i> Itens de controle mensal</h5>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Curva S atualizada</li>
+                <li><i class="fas fa-check-circle"></i> Relatório de IDC/IDP</li>
+                <li><i class="fas fa-check-circle"></i> Conciliação bancária e contábil</li>
+                <li><i class="fas fa-check-circle"></i> Folha de pagamento e encargos quitados</li>
+                <li><i class="fas fa-check-circle"></i> Obrigações tributárias entregues</li>
+            </ul>
+        </div>
+
+        <div class="responsavel">
+            <i class="fas fa-user-tie"></i> <strong>Gatekeeper:</strong> Controller / Gerente de Obras / Contador
+        </div>
+
+        <div class="risk-alert"><strong>Risco:</strong> Descolamento físico-financeiro, passivos trabalhistas ocultos, autuações fiscais.</div>
+        <div class="gateway" title="Pronto para Entrega">
+            <i class="fas fa-key"></i>
+        </div>
+    </div>
+
+    <!-- ========== FASE 05: ENCERRAMENTO ========== -->
+    <div class="process-step">
+        <div class="step-header">
+            <span class="step-tag">Fase 05: Encerramento</span>
+            <span class="kpi-badge">KPI: NPS ≥ 75 | Passivos encerrados | Saldo social positivo</span>
+        </div>
+        <h3>Entrega, Desmobilização, Prestação de Contas e Legado Social</h3>
+        <p>Regularização, desmobilização de canteiro, recuperação de áreas, assistência técnica, e balanço social.</p>
+        
+        <div class="badge-group">
+            <span class="trabalhista-badge"><i class="fas fa-file-signature"></i> Rescisões</span>
+            <span class="tributario-badge"><i class="fas fa-file-invoice"></i> Baixa de inscrições</span>
+            <span class="social-badge"><i class="fas fa-hand-holding-heart"></i> Balanço social</span>
+        </div>
+
+        <div class="subphase">
+            <h4><i class="fas fa-gavel"></i> 5.1 Regularização final</h4>
+            <p>Habite-se, termo de recebimento definitivo, licença de operação, baixa de ARTs.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-tree"></i> 5.2 Recuperação ambiental e desmobilização</h4>
+            <p>Revegetação, descomissionamento de instalações, destinação final de resíduos.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-headset"></i> 5.3 Assistência técnica e garantias</h4>
+            <p>Atendimento a reclamações, análise de causas.</p>
+        </div>
+        <div class="subphase">
+            <h4><i class="fas fa-chart-bar"></i> 5.4 Lições aprendidas e relatórios finais</h4>
+            <p>Compilação de indicadores ambientais, sociais, trabalhistas e econômicos.</p>
+        </div>
+
+        <!-- Encerramento trabalhista -->
+        <div class="trabalhista-box">
+            <strong><i class="fas fa-users" style="color:var(--trabalhista-color);"></i> Encerramento das Obrigações Trabalhistas:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Quitação de rescisões contratuais (aviso prévio, multa do FGTS, etc.)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Liberação de guias para saque do FGTS e seguro-desemprego</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Entrega de documentos (Termo de Rescisão, CD) e homologação quando exigido</li>
+                <li><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> Arquivo da documentação trabalhista pelo prazo legal</li>
+            </ul>
+        </div>
+
+        <!-- Encerramento tributário e societário -->
+        <div class="tributario-box">
+            <strong><i class="fas fa-calculator" style="color:var(--tributario-color);"></i> Encerramento Tributário e Societário:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Apuração final de tributos e quitação</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Entrega de declarações finais (Ex.: DCTF, ECD, ECF)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Se for SPE, realizar a baixa ou extinção da empresa</li>
+                <li><i class="fas fa-check-circle" style="color:var(--tributario-color);"></i> Arquivamento de documentos fiscais e contábeis</li>
+            </ul>
+        </div>
+
+        <!-- Balanço social e legado -->
+        <div class="social-box">
+            <strong><i class="fas fa-hand-holding-heart" style="color:var(--social-color);"></i> Avaliação de Impacto Social e Legado:</strong>
+            <ul style="margin-top:5px; list-style:none; padding-left:0;">
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Balanço social: empregos gerados, renda injetada na região, número de treinamentos</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Pesquisa de satisfação com comunidade do entorno</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Relatório de contribuição para os ODS (Objetivos de Desenvolvimento Sustentável)</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Doação de sobras de materiais para projetos sociais</li>
+                <li><i class="fas fa-check-circle" style="color:var(--social-color);"></i> Criação de comitê de relacionamento pós-obra (se aplicável)</li>
+            </ul>
+        </div>
+
+        <!-- Stakeholders -->
+        <div class="stakeholders-box">
+            <strong><i class="fas fa-users" style="color:var(--stakeholder-color);"></i> Stakeholders:</strong>
+            <div class="stakeholder-list">
+                <div class="stakeholder-item"><i class="fas fa-user"></i> Clientes</div>
+                <div class="stakeholder-item"><i class="fas fa-city"></i> Prefeitura</div>
+                <div class="stakeholder-item"><i class="fas fa-leaf"></i> Órgãos ambientais</div>
+                <div class="stakeholder-item"><i class="fas fa-users"></i> Comunidade</div>
+                <div class="stakeholder-item"><i class="fas fa-briefcase"></i> Sindicatos</div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h5><i class="fas fa-clipboard-check"></i> Documentos obrigatórios para encerramento</h5>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Termo de recebimento definitivo</li>
+                <li><i class="fas fa-check-circle"></i> Licença de operação (se aplicável)</li>
+                <li><i class="fas fa-check-circle"></i> Relatório de fechamento ambiental</li>
+                <li><i class="fas fa-check-circle"></i> Comprovantes de quitação de rescisões e encargos</li>
+                <li><i class="fas fa-check-circle"></i> Balanço social e relatório de legado</li>
+                <li><i class="fas fa-check-circle"></i> Banco de lições aprendidas</li>
+            </ul>
+        </div>
+
+        <div class="responsavel">
+            <i class="fas fa-user-tie"></i> <strong>Gatekeeper:</strong> Diretor de Obras / RH / Contador / Relações Institucionais
+        </div>
+
+        <div class="risk-alert"><strong>Risco:</strong> Passivos trabalhistas futuros, reclamações pós-obra, imagem negativa perante comunidade.</div>
+    </div>
+
+    <!-- ========== MELHORIA CONTÍNUA ========== -->
+    <div class="lessons-learned">
+        <h4><i class="fas fa-sync-alt"></i> Ciclo de Melhoria Contínua (PDCA) e Retroalimentação</h4>
+        <p>Os indicadores de sustentabilidade, compliance, desempenho, trabalhista, tributário e social alimentam a base de lições aprendidas, que devem ser revisadas no início de cada novo empreendimento.</p>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px;">
+            <div><i class="fas fa-check-circle" style="color:var(--kpi-color);"></i> <strong>Lições registradas:</strong> 15</div>
+            <div><i class="fas fa-check-circle" style="color:var(--kpi-color);"></i> <strong>Melhorias ambientais implementadas:</strong> 4</div>
+            <div><i class="fas fa-check-circle" style="color:var(--compliance-color);"></i> <strong>Ações de integridade:</strong> 3</div>
+            <div><i class="fas fa-check-circle" style="color:var(--trabalhista-color);"></i> <strong>Melhorias trabalhistas:</strong> 5</div>
+            <div><i class="fas fa-check-circle" style="color:var(--social-color);"></i> <strong>Projetos sociais pós-obra:</strong> 2</div>
+        </div>
+    </div>
+
+    <!-- ========== PAINÉIS EXECUTIVOS ========== -->
+    <div class="summary-grid">
+        <div class="card-info">
+            <h4><i class="fas fa-briefcase"></i> Visão Executiva Multissetorial</h4>
+            <p>Fluxo aplicável a edificações, infraestrutura (rodovias, barragens, saneamento) e empreendimentos industriais.</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-leaf"></i> Sustentabilidade e Economia Circular</h4>
+            <p>Incorporação de práticas de reciclagem de materiais (RCD, solo, asfalto) e gestão de resíduos desde a concepção.</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-shield-alt"></i> Compliance e Integridade</h4>
+            <p>Alinhado à ISO 37001 (Antissuborno) e Lei 12.846/13, com due diligence, canais de denúncia e auditorias.</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-file-alt"></i> Normas Técnicas e Regulamentadoras</h4>
+            <p>Atendimento às principais NRs (18, 35, 12, 10, 33) e NBRs (6118, 5410, 9050, 15575, etc.) garantindo segurança, qualidade e conformidade legal .</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-users"></i> Gestão de Stakeholders</h4>
+            <p>Mapeamento e engajamento contínuo de todas as partes interessadas: investidores, órgãos públicos, comunidade, trabalhadores, clientes .</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-gavel"></i> Leis Trabalhistas e Previdenciárias</h4>
+            <p>Gestão rigorosa da CLT, encargos sociais, segurança do trabalho (NRs) e prevenção de passivos.</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-calculator"></i> Planejamento Tributário e Societário</h4>
+            <p>Avaliação de regimes (Simples, Presumido, Real, RET), constituição de SPE e cumprimento de obrigações acessórias.</p>
+        </div>
+        <div class="card-info">
+            <h4><i class="fas fa-hand-holding-heart"></i> Impacto e Responsabilidade Social</h4>
+            <p>Compromisso com a comunidade local, inclusão, geração de emprego e renda, e alinhamento aos ODS.</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 Silvanio Gois - Todos os direitos reservados</p>
+    <p><a href="https://www.silvaniogois.com.br/" target="_blank">ir ao Site: www.silvaniogois.com.br</a></p>
+</footer>
+
+<script>
+    // Animação de entrada suave
+    const observerOptions = { threshold: 0.2 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.process-step, .lessons-learned, .card-info').forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "all 0.8s ease-out";
+        observer.observe(el);
+    });
+</script>
+
+</body>
+</html>
